@@ -26,7 +26,7 @@ MeshLedger aims to help users collect, organize, inspect, and locally retain Mes
 
 Flutter remains the shared client foundation, but the UI must go through a platform-adaptation boundary. Feature and domain code should not directly choose platform-specific app shells or native toolkit widgets.
 
-The current platform-aware scaffolds are only an architectural starting point. They do **not** prove a fully native appearance, complete accessibility, native menus/window behavior, or hardware connectivity on every platform. Native integrations should be added only when a demonstrated need justifies their implementation, packaging, fallback, and testing costs.
+Because the native Flutter runner directories are not committed yet, a local checkout must have Flutter installed and run `sh tool/bootstrap_platforms.sh` to generate the Android, iOS, Windows, Linux, and macOS runner projects. The CI workflow performs this bootstrap before analysis and tests. The current platform-aware scaffolds are only an architectural starting point. They do **not** prove a fully native appearance, complete accessibility, native menus/window behavior, or hardware connectivity on every platform. Native integrations should be added only when a demonstrated need justifies their implementation, packaging, fallback, and testing costs.
 
 See [ADR 0002: Adaptive UI and platform integration](docs/adr/0002-adaptive-platform-ui.md) and the [platform support and validation policy](docs/platform-support.md).
 
