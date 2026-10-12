@@ -53,7 +53,8 @@ The following should have a written rationale in an issue, pull request, or Arch
 - privacy, security, permissions, or retention changes;
 - breaking changes to user-facing behavior, configuration, or import/export formats;
 - new dependencies with meaningful security, licensing, or maintenance implications;
-- release and compatibility policy changes.
+- release and compatibility policy changes;
+- changes to the platform UI strategy, platform-specific code, or native toolkit integrations.
 
 ADRs should record the context, decision, alternatives considered, and consequences. An ADR explains a decision; it does not independently grant permission to implement it.
 
@@ -83,7 +84,8 @@ The following areas are considered security- and governance-sensitive:
 - CI workflows and release automation;
 - dependency and build configuration;
 - authentication, encryption, secrets handling, and network publishing;
-- database migrations and data deletion or export behavior.
+- database migrations and data deletion or export behavior;
+- platform selection, native toolkit bridges, and operating-system integration code.
 
 Changes to these areas require a clear explanation and appropriate validation. Attempts to weaken tests, bypass review, conceal behavior, introduce undisclosed network transmission, or remove security checks without a documented justification should be treated as high risk and may be rejected.
 
@@ -138,3 +140,14 @@ This policy should be reviewed when the project adds maintainers, begins accepti
 ## 11. Governance limitations
 
 No policy can guarantee absolute security. A compromised administrator account, stolen credentials, platform-level compromise, or misconfigured repository controls can defeat protections. The project should reduce these risks through layered controls, least privilege, testing, auditability, and recovery planning, and should distinguish documented rules from controls that have actually been configured and tested.
+
+## 12. Platform UI and native integration policy
+
+- Shared domain and data layers must not depend on UI frameworks or operating-system-specific widgets.
+- Platform-specific UI selection must be isolated behind a documented boundary.
+- Android, iOS, and desktop interfaces should follow relevant platform conventions where practical, without requiring the entire application to be duplicated.
+- Linux core functionality must not require a specific distribution or desktop environment.
+- GTK/Libadwaita and Qt/Kirigami integrations are optional and require a documented technical reason, explicit fallback behavior where practical, and validation evidence.
+- Do not claim native appearance, accessibility, hardware connectivity, or platform support solely because Flutter can compile for that target.
+- Platform support records must identify the tested OS/version, desktop environment where relevant, packaging route, test scope, results, and known limitations.
+- Changes to this strategy require an Architecture Decision Record and tests appropriate to the affected platforms.
