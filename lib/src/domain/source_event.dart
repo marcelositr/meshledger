@@ -1,3 +1,5 @@
+import 'node_observation.dart';
+
 /// Metadata and original evidence for one item received from a source.
 ///
 /// Source payloads are not localized or rewritten. The raw payload may be
@@ -5,7 +7,7 @@
 class SourceEvent {
   const SourceEvent({
     required this.eventId,
-    required this.sourceType,
+    required this.source,
     required this.receivedAt,
     required this.createdAt,
     this.sourceInstance,
@@ -19,7 +21,7 @@ class SourceEvent {
   });
 
   final String eventId;
-  final String sourceType;
+  final ObservationSource source;
   final String? sourceInstance;
   final DateTime receivedAt;
   final DateTime? observedAt;
@@ -33,7 +35,7 @@ class SourceEvent {
 
   Map<String, Object?> toDatabaseMap() => {
         'event_id': eventId,
-        'source_type': sourceType,
+        'source_type': source.name,
         'source_instance': sourceInstance,
         'received_at_utc': receivedAt.toUtc().toIso8601String(),
         'observed_at_utc': observedAt?.toUtc().toIso8601String(),
