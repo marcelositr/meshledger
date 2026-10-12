@@ -20,7 +20,7 @@ class ObservationRepository {
     if (event.eventId != observation.eventId) {
       throw ArgumentError('The event and observation must share an event ID.');
     }
-    if (event.sourceType != observation.source.name) {
+    if (event.source != observation.source) {
       throw ArgumentError('The event and observation source types must match.');
     }
 
