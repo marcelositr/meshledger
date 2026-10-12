@@ -2,7 +2,7 @@
 
 Cross-platform Meshtastic node and contact manager with local history and SQLite storage.
 
-> **Project status: early prototype.** The development branch now contains a Flutter app shell, English and Brazilian Portuguese locale resources, an initial SQLite schema, source-event and node-observation models, an atomic persistence repository, starter tests, and a CI workflow. Radio/MQTT/file ingestion and the node-management UI are not implemented yet. Platform compatibility and CI results must be verified before being claimed.
+> **Project status: early prototype.** The development branch contains a Flutter app shell, initial platform-aware app/page scaffolds, English and Brazilian Portuguese locale resources, an initial SQLite schema, source-event and node-observation models, an atomic persistence repository, starter tests, architecture decisions, and a CI workflow. Radio/MQTT/file ingestion and the node-management UI are not implemented yet. Tests, CI results, and platform compatibility must be verified before being claimed.
 
 ## Vision
 
@@ -17,8 +17,18 @@ MeshLedger aims to help users collect, organize, inspect, and locally retain Mes
 - **Preserve evidence:** retain original events when possible; deduplicate in queries and visualizations rather than silently deleting records.
 - **Explicit sharing:** exporting or publishing locally collected information must be an intentional user action.
 - **Cross-platform direction:** Windows, Linux, macOS, Android, and iOS are target platforms. Actual support will be validated and documented as implementation progresses.
-- **Internationalization:** English (`en`) and Brazilian Portuguese (`pt_BR`) are the initial target languages. The design should allow additional languages later.
+- **Adaptive UI:** share the application foundation without forcing one operating system's design language onto every platform. Use Cupertino conventions on iOS, Material conventions on Android, and a desktop-oriented interface on Linux, Windows, and macOS.
+- **Linux independence:** core functionality must not require GNOME, KDE Plasma, or a specific distribution. GTK/Libadwaita and Qt/Kirigami are optional integration paths, not mandatory competing UI frameworks.
+- **Internationalization:** English (`en`) and Brazilian Portuguese (`pt_BR`) are the initial target languages. The design should allow additional locales later.
 - **Security and privacy:** document limitations honestly and do not imply that data is available, readable, or authorized when the source does not provide it.
+
+## Platform UI strategy
+
+Flutter remains the shared client foundation, but the UI must go through a platform-adaptation boundary. Feature and domain code should not directly choose platform-specific app shells or native toolkit widgets.
+
+The current platform-aware scaffolds are only an architectural starting point. They do **not** prove a fully native appearance, complete accessibility, native menus/window behavior, or hardware connectivity on every platform. Native integrations should be added only when a demonstrated need justifies their implementation, packaging, fallback, and testing costs.
+
+See [ADR 0002: Adaptive UI and platform integration](docs/adr/0002-adaptive-platform-ui.md) and the [platform support and validation policy](docs/platform-support.md).
 
 ## Planned data sources
 
@@ -30,16 +40,17 @@ The application can only collect information exposed by a source and accessible 
 
 ## Initial development scope
 
-The first foundation pass is now represented in code:
+The first foundation pass is represented in code:
 
 - initial source-event and node-observation models;
 - local SQLite schema with source provenance and foreign-key constraints;
 - transactional persistence of an event and its parsed observation;
 - English (`en`) and Brazilian Portuguese (`pt_BR`) UI resources;
-- starter unit and repository tests;
-- a Flutter CI workflow and an architecture decision record.
+- starter unit, repository, and platform-scaffold tests;
+- a Flutter CI workflow;
+- architecture decisions for the shared foundation and adaptive UI.
 
-The next steps are to validate the build and tests, strengthen schema migration and data-integrity behavior, and then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, manual tests, and platform-specific validation remain future work.
+The next steps are to validate the build and tests, strengthen schema migration and data-integrity behavior, and then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
 
 ## Governance and contributions
 
@@ -53,6 +64,7 @@ Please open an issue to discuss substantial changes before investing in a large 
 
 - The current app is an early prototype, not a complete node-management application.
 - Supported devices, transports, operating systems, MQTT topics, and import formats must be verified before being declared supported. The CI workflow has been added, but its passing status has not yet been verified.
+- The initial desktop shell is Flutter-based and is not yet a fully native GTK, Qt, WinUI, or AppKit interface.
 - Data interpretation may evolve; original source data should be preserved when practical so it can be reprocessed.
 - Governance text does not itself enforce GitHub permissions, branch protection, CI requirements, or release signing. Those controls must be configured and tested separately.
 
