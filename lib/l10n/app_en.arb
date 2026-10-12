@@ -1,0 +1,11 @@
+{
+  "@@locale": "en",
+  "appTitle": "MeshLedger",
+  "appSubtitle": "Your local Meshtastic node history",
+  "foundationHeading": "The foundation is in place",
+  "foundationDescription": "MeshLedger is being built local-first. Source history and provenance will remain distinct as collection features are added.",
+  "databaseChecking": "Opening local database…",
+  "databaseReady": "Local database opened successfully.",
+  "databaseError": "Could not open the local database.",
+  "developmentNotice": "Early development build"
+}
