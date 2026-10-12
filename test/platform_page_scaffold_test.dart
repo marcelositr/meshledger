@@ -1,21 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meshledger/src/ui/platform/platform_page_scaffold.dart';
 
 void main() {
-  tearDown(() {
-    debugDefaultTargetPlatformOverride = null;
-  });
-
   testWidgets('uses Cupertino navigation conventions on iOS', (tester) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-
     await tester.pumpWidget(
       const CupertinoApp(
         home: PlatformPageScaffold(
           title: 'MeshLedger',
+          platform: TargetPlatform.iOS,
           child: Text('Page content'),
         ),
       ),
@@ -26,12 +20,11 @@ void main() {
   });
 
   testWidgets('uses Material app bar conventions on Android', (tester) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.android;
-
     await tester.pumpWidget(
       const MaterialApp(
         home: PlatformPageScaffold(
           title: 'MeshLedger',
+          platform: TargetPlatform.android,
           child: Text('Page content'),
         ),
       ),
@@ -42,12 +35,11 @@ void main() {
   });
 
   testWidgets('uses desktop page framing on Linux', (tester) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.linux;
-
     await tester.pumpWidget(
       const MaterialApp(
         home: PlatformPageScaffold(
           title: 'MeshLedger',
+          platform: TargetPlatform.linux,
           child: Text('Page content'),
         ),
       ),
