@@ -14,3 +14,7 @@ flutter create \
   --platforms=android,ios,windows,linux,macos \
   --no-pub \
   .
+
+# flutter create may add its sample widget test when the project has no
+# platform-independent widget test yet. Do not let that template enter CI.
+rm -f test/widget_test.dart
