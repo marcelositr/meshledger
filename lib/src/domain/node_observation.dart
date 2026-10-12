@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// The transport or action from which an observation was collected.
 enum ObservationSource {
   radio,
@@ -17,6 +19,7 @@ class NodeObservation {
     required this.eventId,
     required this.source,
     required this.receivedAt,
+    required this.createdAt,
     required this.rawFields,
     this.sourceNodeId,
     this.displayName,
@@ -33,15 +36,17 @@ class NodeObservation {
   final String? displayName;
   final DateTime? observedAt;
   final DateTime receivedAt;
+  final DateTime createdAt;
   final int? rssiDbm;
   final double? snrDb;
   final int? hopCount;
 
   /// Parsed fields retained for forward compatibility and diagnostics.
-  ///
   /// Values are not translated or rewritten for localization.
   final Map<String, Object?> rawFields;
 
+  /// Produces values for the node_observations table.
+  /// The referenced source event must be inserted first.
   Map<String, Object?> toDatabaseMap() => {
         'observation_id': observationId,
         'event_id': eventId,
@@ -53,6 +58,8 @@ class NodeObservation {
         'rssi_dbm': rssiDbm,
         'snr_db': snrDb,
         'hop_count': hopCount,
+        'raw_fields_json': jsonEncode(rawFields),
+        'created_at_utc': createdAt.toUtc().toIso8601String(),
       };
 
   static ObservationSource sourceFromString(String value) {
