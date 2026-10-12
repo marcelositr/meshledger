@@ -11,11 +11,12 @@ class LocalDatabase {
   static const databaseName = 'meshledger.db';
   static const schemaVersion = 1;
 
-  static Future<Database> open() async {
-    final databasePath = p.join(await getDatabasesPath(), databaseName);
+  static Future<Database> open({String? databasePath}) async {
+    final resolvedPath = databasePath ??
+        p.join(await getDatabasesPath(), databaseName);
 
     return openDatabase(
-      databasePath,
+      resolvedPath,
       version: schemaVersion,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
