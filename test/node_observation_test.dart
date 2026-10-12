@@ -14,6 +14,7 @@ void main() {
         sourceNodeId: '!a1b2c3d4',
         displayName: 'PU2OMT-1',
         receivedAt: receivedAt,
+        createdAt: DateTime.parse('2026-10-12T18:01:00Z'),
         observedAt: observedAt,
         rssiDbm: -87,
         snrDb: 7.5,
@@ -27,6 +28,8 @@ void main() {
       expect(map['source_node_id'], '!a1b2c3d4');
       expect(map['received_at_utc'], receivedAt.toUtc().toIso8601String());
       expect(map['observed_at_utc'], observedAt.toUtc().toIso8601String());
+      expect(map['created_at_utc'], '2026-10-12T18:01:00.000Z');
+      expect(map['raw_fields_json'], '{"originalName":"PU2OMT-1"}');
     });
 
     test('rejects unknown source values instead of guessing', () {
