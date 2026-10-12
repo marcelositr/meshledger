@@ -2,7 +2,7 @@
 
 Cross-platform Meshtastic node and contact manager with local history and SQLite storage.
 
-> **Project status: early planning.** MeshLedger is not yet a working application. Features described here are goals, not claims of implemented functionality.
+> **Project status: early prototype.** The development branch now contains a Flutter app shell, English and Brazilian Portuguese locale resources, an initial SQLite schema, source-event and node-observation models, an atomic persistence repository, starter tests, and a CI workflow. Radio/MQTT/file ingestion and the node-management UI are not implemented yet. Platform compatibility and CI results must be verified before being claimed.
 
 ## Vision
 
@@ -30,15 +30,16 @@ The application can only collect information exposed by a source and accessible 
 
 ## Initial development scope
 
-The first milestone is the foundation, not a feature-complete user interface:
+The first foundation pass is now represented in code:
 
-- data model and event provenance;
-- local SQLite storage;
-- event logging and error handling;
-- automated tests for core behavior;
-- documented architecture decisions.
+- initial source-event and node-observation models;
+- local SQLite schema with source provenance and foreign-key constraints;
+- transactional persistence of an event and its parsed observation;
+- English (`en`) and Brazilian Portuguese (`pt_BR`) UI resources;
+- starter unit and repository tests;
+- a Flutter CI workflow and an architecture decision record.
 
-Radio capture, node catalog, filters and history, MQTT integration, file import, manual tests, and platform-specific validation will be introduced in later, reviewed steps.
+The next steps are to validate the build and tests, strengthen schema migration and data-integrity behavior, and then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, manual tests, and platform-specific validation remain future work.
 
 ## Governance and contributions
 
@@ -50,8 +51,8 @@ Please open an issue to discuss substantial changes before investing in a large 
 
 ## Current limitations
 
-- No functional application is promised by this initial repository state.
-- Supported devices, transports, operating systems, MQTT topics, and import formats must be verified before being declared supported.
+- The current app is an early prototype, not a complete node-management application.
+- Supported devices, transports, operating systems, MQTT topics, and import formats must be verified before being declared supported. The CI workflow has been added, but its passing status has not yet been verified.
 - Data interpretation may evolve; original source data should be preserved when practical so it can be reprocessed.
 - Governance text does not itself enforce GitHub permissions, branch protection, CI requirements, or release signing. Those controls must be configured and tested separately.
 
