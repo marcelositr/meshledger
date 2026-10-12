@@ -4,11 +4,24 @@
 
 ## Technology direction
 
-- **Flutter and Dart** provide the shared application and domain layer for Windows, Linux, macOS, Android, and iOS.
+- **Flutter and Dart** provide the shared client and domain foundation for Windows, Linux, macOS, Android, and iOS.
 - **SQLite** stores local history.
 - Platform-specific radio connectivity and MQTT ingestion are adapters, not assumptions baked into the data model.
 - English (`en`) and Brazilian Portuguese (`pt_BR`) are the initial UI locales. Additional locales should be additive.
 - Python may be used for development tools or independent services if justified, but it is not required in the client runtime.
+
+## UI architecture
+
+The application shell must select platform conventions through a dedicated UI boundary. Feature, domain, and data code must not instantiate platform-specific application shells directly.
+
+- iOS begins with Cupertino navigation conventions.
+- Android begins with Material conventions.
+- Linux, Windows, and macOS begin with a restrained desktop-oriented shell, with platform-specific menus, keyboard behavior, window integration, and controls added as validated requirements emerge.
+- MeshLedger's brand identity remains distinct from each operating system's interaction conventions.
+- GTK/Libadwaita and Qt/Kirigami are optional Linux integration paths. Neither is a required UI framework for the shared Flutter client.
+- A Flutter scaffold is not evidence of a fully native look and feel or of working radio/Bluetooth/USB support.
+
+See [ADR 0002](../adr/0002-adaptive-platform-ui.md) and [platform support validation](../../platform-support.md).
 
 ## Data flow
 
@@ -44,4 +57,4 @@ An observation records what the application could interpret about a node at a po
 
 ## Current scope
 
-This baseline creates the app shell, locale resources, an initial SQLite schema, and a source-aware observation model. It does not yet connect to a radio, subscribe to MQTT, import files, or provide node browsing and search. Those capabilities must be added and tested separately.
+This baseline creates the app shell, locale resources, initial platform-aware scaffolds, an initial SQLite schema, and a source-aware observation model. It does not yet connect to a radio, subscribe to MQTT, import files, or provide node browsing and search. Native GTK/Qt integration and platform compatibility remain unverified and must be implemented/tested separately.
