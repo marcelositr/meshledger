@@ -1,0 +1,11 @@
+{
+  "@@locale": "pt",
+  "appTitle": "MeshLedger",
+  "appSubtitle": "Seu histórico local de nós Meshtastic",
+  "foundationHeading": "A fundação está pronta",
+  "foundationDescription": "O MeshLedger está sendo desenvolvido com prioridade local. O histórico e a origem dos dados permanecerão distintos conforme os recursos de coleta forem adicionados.",
+  "databaseChecking": "Abrindo banco de dados local…",
+  "databaseReady": "Banco de dados local aberto com sucesso.",
+  "databaseError": "Não foi possível abrir o banco de dados local.",
+  "developmentNotice": "Versão em desenvolvimento inicial"
+}
