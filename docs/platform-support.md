@@ -4,6 +4,10 @@
 
 MeshLedger targets Android, iOS, Windows, macOS, and Linux. Targets are intentions until builds and relevant behavior have been tested and recorded.
 
+## Local development bootstrap
+
+The current repository does not commit generated native runner directories. With the Flutter SDK installed, run `sh tool/bootstrap_platforms.sh` from the repository root to generate the standard Android, iOS, Windows, Linux, and macOS runner projects. The CI workflow runs the same script before analysis and tests. Generation is not equivalent to a successful native build; each target still needs platform-specific validation.
+
 ## UI strategy
 
 | Platform | Initial UI direction | Current status |
