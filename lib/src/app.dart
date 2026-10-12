@@ -2,22 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import 'data/local_database.dart';
+import 'ui/platform/platform_adaptive_app.dart';
+import 'ui/platform/platform_page_scaffold.dart';
 
 class MeshLedgerApp extends StatelessWidget {
   const MeshLedgerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF315B70)),
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
-    );
+    return PlatformAdaptiveApp(home: const HomePage());
   }
 }
 
@@ -45,24 +38,27 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
+    const accent = Color(0xFF315B70);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(strings.appTitle)),
-      body: Center(
+    return PlatformPageScaffold(
+      title: strings.appTitle,
+      child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
+          constraints: const BoxConstraints(maxWidth: 720),
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.hub_outlined, size: 44, color: colors.primary),
+                const Icon(Icons.hub_outlined, size: 44, color: accent),
                 const SizedBox(height: 20),
                 Text(
                   strings.foundationHeading,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(strings.appSubtitle),
@@ -72,19 +68,23 @@ class _HomePageState extends State<HomePage> {
                 FutureBuilder<void>(
                   future: _databaseStartup,
                   builder: (context, snapshot) {
-                    final message = switch (snapshot.connectionState) {
-                      ConnectionState.waiting => strings.databaseChecking,
-                      _ when snapshot.hasError => strings.databaseError,
-                      _ => strings.databaseReady,
-                    };
+                    final isWaiting =
+                        snapshot.connectionState == ConnectionState.waiting;
                     final isError = snapshot.hasError;
+                    final message = isWaiting
+                        ? strings.databaseChecking
+                        : isError
+                            ? strings.databaseError
+                            : strings.databaseReady;
 
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(
-                          isError ? Icons.error_outline : Icons.storage_outlined,
-                          color: isError ? colors.error : colors.primary,
+                          isError
+                              ? Icons.error_outline
+                              : Icons.storage_outlined,
+                          color: isError ? const Color(0xFFB3261E) : accent,
                         ),
                         const SizedBox(width: 10),
                         Expanded(child: Text(message)),
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 28),
                 Text(
                   strings.developmentNotice,
-                  style: Theme.of(context).textTheme.labelMedium,
+                  style: const TextStyle(fontSize: 12),
                 ),
               ],
             ),
