@@ -44,7 +44,9 @@ class _AppStartupPageState extends State<AppStartupPage> {
 
   void _openDependencies() {
     final loader = widget.dependenciesLoader;
-    _dependencies = loader != null ? loader() : AppDependencies.open();
+    _dependencies = Future<AppDependencies>.sync(
+      () => loader != null ? loader() : AppDependencies.open(),
+    );
   }
 
   void _retry() {

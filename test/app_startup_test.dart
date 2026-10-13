@@ -93,4 +93,43 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets(
+      'shows an error and retries after a synchronous startup exception',
+      (tester) async {
+    dependencies = await tester.runAsync(
+      () => AppDependencies.open(
+        databasePath: p.join(temporaryDirectory.path, 'sync-retry.db'),
+      ),
+    );
+
+    var attempts = 0;
+
+    Future<AppDependencies> loadDependencies() {
+      attempts++;
+      if (attempts == 1) {
+        throw StateError('Simulated synchronous startup failure');
+      }
+      return Future<AppDependencies>.value(dependencies!);
+    }
+
+    await tester.pumpWidget(
+      MeshLedgerApp(dependenciesLoader: loadDependencies),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1));
+
+    expect(find.text('Could not open the local database.'), findsOneWidget);
+    expect(find.text('Try again'), findsOneWidget);
+
+    await tester.tap(find.text('Try again'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1));
+
+    expect(attempts, 2);
+    expect(
+      find.text('Local database opened and kept available.'),
+      findsOneWidget,
+    );
+  });
 }
