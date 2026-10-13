@@ -48,11 +48,12 @@ The first foundation pass is represented in code:
 - a startup-owned SQLite connection injected into the repository layer;
 - localized loading, failure, retry, and ready states for database startup;
 - English (`en`) and Brazilian Portuguese (`pt_BR`) UI resources;
-- starter unit, repository, dependency-lifecycle, and platform-scaffold tests;
+- repository integrity tests for atomic rollback, foreign-key enforcement, duplicate IDs, and schema indexes;
+- dependency-lifecycle and platform-scaffold tests;
 - a Flutter CI workflow with analysis, tests, and Linux/Android debug build smoke checks;
 - architecture decisions for the shared foundation, adaptive UI, and database lifecycle.
 
-The next steps are to validate the native build checks, strengthen schema migration and data-integrity behavior, and then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
+The next steps are to strengthen schema migration behavior and startup/UI tests, then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
 
 ## Governance and contributions
 
