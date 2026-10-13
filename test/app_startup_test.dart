@@ -37,12 +37,15 @@ void main() {
 
     expect(find.text('Opening local database…'), findsOneWidget);
 
-    dependencies = await AppDependencies.open(
-      databasePath: p.join(temporaryDirectory.path, 'ready.db'),
+    dependencies = await tester.runAsync(
+      () => AppDependencies.open(
+        databasePath: p.join(temporaryDirectory.path, 'ready.db'),
+      ),
     );
     completer.complete(dependencies);
 
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1));
 
     expect(
       find.text('Local database opened and kept available.'),
@@ -53,6 +56,12 @@ void main() {
 
   testWidgets('shows an error and retry recovers after startup failure',
       (tester) async {
+    dependencies = await tester.runAsync(
+      () => AppDependencies.open(
+        databasePath: p.join(temporaryDirectory.path, 'retry.db'),
+      ),
+    );
+
     var attempts = 0;
 
     Future<AppDependencies> loadDependencies() {
@@ -62,24 +71,21 @@ void main() {
           StateError('Simulated database startup failure'),
         );
       }
-      return AppDependencies.open(
-        databasePath: p.join(temporaryDirectory.path, 'retry.db'),
-      ).then((value) {
-        dependencies = value;
-        return value;
-      });
+      return Future<AppDependencies>.value(dependencies!);
     }
 
     await tester.pumpWidget(
       MeshLedgerApp(dependenciesLoader: loadDependencies),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1));
 
     expect(find.text('Could not open the local database.'), findsOneWidget);
     expect(find.text('Try again'), findsOneWidget);
 
     await tester.tap(find.text('Try again'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1));
 
     expect(attempts, 2);
     expect(
