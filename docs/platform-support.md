@@ -6,17 +6,28 @@ MeshLedger targets Android, iOS, Windows, macOS, and Linux. Targets are intentio
 
 ## Local development bootstrap
 
-The current repository does not commit generated native runner directories. With the Flutter SDK installed, run `sh tool/bootstrap_platforms.sh` from the repository root to generate the standard Android, iOS, Windows, Linux, and macOS runner projects. The CI workflow runs the same script before analysis and tests. Generation is not equivalent to a successful native build; each target still needs platform-specific validation.
+The current repository does not commit generated native runner directories. With the Flutter SDK installed, run `sh tool/bootstrap_platforms.sh` from the repository root to generate the standard Android, iOS, Windows, Linux, and macOS runner projects. The CI workflow runs the same script before analysis, tests, and debug builds. Generation is not equivalent to a successful native build; each target still needs platform-specific validation.
+
+## CI build smoke checks
+
+The CI workflow is configured to run these build checks on Ubuntu:
+
+- **Linux desktop:** `flutter build linux --debug`
+- **Android:** `flutter build apk --debug`
+
+These are compile/build smoke checks. A successful result demonstrates that the current source can produce those debug build outputs in the CI environment. It does not prove that the app launches correctly on a physical device, that Bluetooth or USB/serial radio connectivity works, that MQTT ingestion works, or that a release package is ready to publish.
+
+iOS, Windows, and macOS builds are not covered by this Ubuntu job. Their runner generation is not evidence of build support.
 
 ## UI strategy
 
 | Platform | Initial UI direction | Current status |
 |---|---|---|
-| Android | Material conventions, adaptive to screen size | Foundation only; not validated |
-| iOS | Cupertino conventions where appropriate | Foundation only; not validated |
-| Windows | Desktop-oriented layout, keyboard and window behavior | Foundation only; not validated |
-| macOS | Desktop-oriented layout, with Apple conventions added deliberately | Foundation only; not validated |
-| Linux | Desktop-oriented layout, independent of one distribution or desktop environment | Foundation only; not validated |
+| Android | Material conventions, adaptive to screen size | Foundation only; CI debug build is a smoke check, not device validation |
+| iOS | Cupertino conventions where appropriate | Foundation only; build and device behavior not validated |
+| Windows | Desktop-oriented layout, keyboard and window behavior | Foundation only; build and device behavior not validated |
+| macOS | Desktop-oriented layout, with Apple conventions added deliberately | Foundation only; build and device behavior not validated |
+| Linux | Desktop-oriented layout, independent of one distribution or desktop environment | Foundation only; CI debug build is a smoke check, not desktop-environment validation |
 
 The initial Flutter scaffold is not a claim that every control is native to its host operating system. Platform fidelity must be reviewed as features are implemented.
 

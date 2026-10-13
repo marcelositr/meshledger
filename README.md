@@ -26,7 +26,7 @@ MeshLedger aims to help users collect, organize, inspect, and locally retain Mes
 
 Flutter remains the shared client foundation, but the UI must go through a platform-adaptation boundary. Feature and domain code should not directly choose platform-specific app shells or native toolkit widgets.
 
-Because the native Flutter runner directories are not committed yet, a local checkout must have Flutter installed and run `sh tool/bootstrap_platforms.sh` to generate the Android, iOS, Windows, Linux, and macOS runner projects. The CI workflow performs this bootstrap before analysis and tests. The current platform-aware scaffolds are only an architectural starting point. They do **not** prove a fully native appearance, complete accessibility, native menus/window behavior, or hardware connectivity on every platform. Native integrations should be added only when a demonstrated need justifies their implementation, packaging, fallback, and testing costs.
+Because the native Flutter runner directories are not committed yet, a local checkout must have Flutter installed and run `sh tool/bootstrap_platforms.sh` to generate the Android, iOS, Windows, Linux, and macOS runner projects. The CI workflow performs this bootstrap before analysis, tests, and debug builds. The current platform-aware scaffolds are only an architectural starting point. They do **not** prove a fully native appearance, complete accessibility, native menus/window behavior, or hardware connectivity on every platform. Native integrations should be added only when a demonstrated need justifies their implementation, packaging, fallback, and testing costs.
 
 See [ADR 0002: Adaptive UI and platform integration](docs/adr/0002-adaptive-platform-ui.md) and the [platform support and validation policy](docs/platform-support.md).
 
@@ -49,10 +49,10 @@ The first foundation pass is represented in code:
 - localized loading, failure, retry, and ready states for database startup;
 - English (`en`) and Brazilian Portuguese (`pt_BR`) UI resources;
 - starter unit, repository, dependency-lifecycle, and platform-scaffold tests;
-- a Flutter CI workflow;
+- a Flutter CI workflow with analysis, tests, and Linux/Android debug build smoke checks;
 - architecture decisions for the shared foundation, adaptive UI, and database lifecycle.
 
-The next steps are to validate the build and tests, strengthen schema migration and data-integrity behavior, and then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
+The next steps are to validate the native build checks, strengthen schema migration and data-integrity behavior, and then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
 
 ## Governance and contributions
 
@@ -65,7 +65,7 @@ Please open an issue to discuss substantial changes before investing in a large 
 ## Current limitations
 
 - The current app is an early prototype, not a complete node-management application.
-- Supported devices, transports, operating systems, MQTT topics, and import formats must be verified before being declared supported. CI analysis and test success do not validate native builds or hardware compatibility.
+- Supported devices, transports, operating systems, MQTT topics, and import formats must be verified before being declared supported. Linux/Android debug build checks do not validate hardware compatibility or release packaging.
 - The initial desktop shell is Flutter-based and is not yet a fully native GTK, Qt, WinUI, or AppKit interface.
 - Data interpretation may evolve; original source data should be preserved when practical so it can be reprocessed.
 - Governance text does not itself enforce GitHub permissions, branch protection, CI requirements, or release signing. Those controls must be configured and tested separately.
