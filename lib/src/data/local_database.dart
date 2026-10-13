@@ -1,15 +1,15 @@
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
-/// Opens the local MeshLedger database and owns its initial schema.
+/// Opens the local MeshLedger database and owns its versioned schema.
 ///
-/// Schema changes must be versioned with explicit migrations. Never silently
-/// discard source events or observations during an upgrade.
+/// Schema changes must be added as explicit, sequential migrations. Never
+/// silently discard source events or observations during an upgrade.
 class LocalDatabase {
   LocalDatabase._();
 
   static const databaseName = 'meshledger.db';
-  static const schemaVersion = 1;
+  static const schemaVersion = 2;
 
   static Future<Database> open({String? databasePath}) async {
     final resolvedPath = databasePath ??
@@ -24,7 +24,31 @@ class LocalDatabase {
       onCreate: (db, version) async {
         await _createSchema(db);
       },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        await _migrate(db, oldVersion, newVersion);
+      },
     );
+  }
+
+  static Future<void> _migrate(
+    DatabaseExecutor db,
+    int oldVersion,
+    int newVersion,
+  ) async {
+    for (var version = oldVersion + 1; version <= newVersion; version++) {
+      switch (version) {
+        case 2:
+          await _migrateToVersion2(db);
+      }
+    }
+  }
+
+  /// Adds a composite index for source-scoped chronological history queries.
+  static Future<void> _migrateToVersion2(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE INDEX idx_source_events_source_received_at
+      ON source_events(source_type, received_at_utc)
+    ''');
   }
 
   static Future<void> _createSchema(DatabaseExecutor db) async {
@@ -70,6 +94,11 @@ class LocalDatabase {
     await db.execute('''
       CREATE INDEX idx_source_events_received_at
       ON source_events(received_at_utc)
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_source_events_source_received_at
+      ON source_events(source_type, received_at_utc)
     ''');
 
     await db.execute('''

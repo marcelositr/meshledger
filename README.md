@@ -2,7 +2,7 @@
 
 Cross-platform Meshtastic node and contact manager with local history and SQLite storage.
 
-> **Project status: early prototype.** The development branch contains a Flutter app shell, initial platform-aware app/page scaffolds, English and Brazilian Portuguese locale resources, an initial SQLite schema, source-event and node-observation models, an atomic persistence repository, starter tests, architecture decisions, and a CI workflow. Radio/MQTT/file ingestion and the node-management UI are not implemented yet. Tests, CI results, and platform compatibility must be verified before being claimed.
+> **Project status: early prototype.** The development branch contains a Flutter app shell, initial platform-aware app/page scaffolds, English and Brazilian Portuguese locale resources, a versioned SQLite schema, source-event and node-observation models, an atomic persistence repository, starter tests, architecture decisions, and a CI workflow. Radio/MQTT/file ingestion and the node-management UI are not implemented yet. Tests, CI results, and platform compatibility must be verified before being claimed.
 
 ## Vision
 
@@ -44,16 +44,18 @@ The first foundation pass is represented in code:
 
 - initial source-event and node-observation models;
 - local SQLite schema with source provenance and foreign-key constraints;
+- sequential schema migrations with retained-data tests;
 - transactional persistence of an event and its parsed observation;
 - a startup-owned SQLite connection injected into the repository layer;
 - localized loading, failure, retry, and ready states for database startup;
+- startup widget tests for loading, failure, retry, and successful recovery;
 - English (`en`) and Brazilian Portuguese (`pt_BR`) UI resources;
 - repository integrity tests for atomic rollback, foreign-key enforcement, duplicate IDs, and schema indexes;
 - dependency-lifecycle and platform-scaffold tests;
 - a Flutter CI workflow with analysis, tests, and Linux/Android debug build smoke checks;
 - architecture decisions for the shared foundation, adaptive UI, and database lifecycle.
 
-The next steps are to strengthen schema migration behavior and startup/UI tests, then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
+Next, review schema-upgrade failure handling and UI behavior, then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
 
 ## Governance and contributions
 

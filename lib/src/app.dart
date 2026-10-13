@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,17 +9,25 @@ import 'app_dependencies.dart';
 import 'ui/platform/platform_adaptive_app.dart';
 import 'ui/platform/platform_page_scaffold.dart';
 
+typedef AppDependenciesLoader = Future<AppDependencies> Function();
+
 class MeshLedgerApp extends StatelessWidget {
-  const MeshLedgerApp({super.key});
+  const MeshLedgerApp({super.key, this.dependenciesLoader});
+
+  final AppDependenciesLoader? dependenciesLoader;
 
   @override
   Widget build(BuildContext context) {
-    return const PlatformAdaptiveApp(home: AppStartupPage());
+    return PlatformAdaptiveApp(
+      home: AppStartupPage(dependenciesLoader: dependenciesLoader),
+    );
   }
 }
 
 class AppStartupPage extends StatefulWidget {
-  const AppStartupPage({super.key});
+  const AppStartupPage({super.key, this.dependenciesLoader});
+
+  final AppDependenciesLoader? dependenciesLoader;
 
   @override
   State<AppStartupPage> createState() => _AppStartupPageState();
@@ -33,7 +43,8 @@ class _AppStartupPageState extends State<AppStartupPage> {
   }
 
   void _openDependencies() {
-    _dependencies = AppDependencies.open();
+    final loader = widget.dependenciesLoader;
+    _dependencies = loader != null ? loader() : AppDependencies.open();
   }
 
   void _retry() {
