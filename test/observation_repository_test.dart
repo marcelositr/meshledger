@@ -141,7 +141,8 @@ void main() {
   });
 
   test('schema version, foreign key, and indexes are present', () async {
-    expect(await database.getVersion(), LocalDatabase.schemaVersion);
+    final versionRows = await database.rawQuery('PRAGMA user_version');
+    expect(versionRows.single['user_version'], LocalDatabase.schemaVersion);
 
     final foreignKeys =
         await database.rawQuery('PRAGMA foreign_key_list(node_observations)');
