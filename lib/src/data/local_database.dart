@@ -39,6 +39,10 @@ class LocalDatabase {
       switch (version) {
         case 2:
           await _migrateToVersion2(db);
+        default:
+          throw StateError(
+            'No SQLite migration is registered for schema version $version.',
+          );
       }
     }
   }
