@@ -45,3 +45,46 @@ class PlatformPageScaffold extends StatelessWidget {
     }
   }
 }
+
+class _DesktopPageScaffold extends StatelessWidget {
+  const _DesktopPageScaffold({
+    required this.title,
+    required this.child,
+  });
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              constraints: const BoxConstraints(minHeight: 48),
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF4F5F6),
+                border: Border(
+                  bottom: BorderSide(color: const Color(0x1F000000)),
+                ),
+              ),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Color(0xFF202124),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Expanded(child: child),
+          ],
+        ),
+      ),
+    );
+  }
+}
