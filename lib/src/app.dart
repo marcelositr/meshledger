@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
-import 'data/local_database.dart';
+import 'app_dependencies.dart';
 import 'ui/platform/platform_adaptive_app.dart';
 import 'ui/platform/platform_page_scaffold.dart';
 
@@ -10,35 +12,120 @@ class MeshLedgerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformAdaptiveApp(home: const HomePage());
+    return const PlatformAdaptiveApp(home: AppStartupPage());
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class AppStartupPage extends StatefulWidget {
+  const AppStartupPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<AppStartupPage> createState() => _AppStartupPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  late final Future<void> _databaseStartup;
+class _AppStartupPageState extends State<AppStartupPage> {
+  late Future<AppDependencies> _dependencies;
 
   @override
   void initState() {
     super.initState();
-    _databaseStartup = _openDatabase();
+    _openDependencies();
   }
 
-  Future<void> _openDatabase() async {
-    final database = await LocalDatabase.open();
-    await database.close();
+  void _openDependencies() {
+    _dependencies = AppDependencies.open();
+  }
+
+  void _retry() {
+    setState(_openDependencies);
   }
 
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
+
+    return FutureBuilder<AppDependencies>(
+      future: _dependencies,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return _StartupStatusPage(
+            message: strings.databaseChecking,
+            icon: Icons.storage_outlined,
+          );
+        }
+
+        if (snapshot.hasError || !snapshot.hasData) {
+          return _StartupStatusPage(
+            message: strings.databaseError,
+            icon: Icons.error_outline,
+            action: defaultTargetPlatform == TargetPlatform.iOS
+                ? CupertinoButton(
+                    onPressed: _retry,
+                    child: Text(strings.databaseRetry),
+                  )
+                : FilledButton(
+                    onPressed: _retry,
+                    child: Text(strings.databaseRetry),
+                  ),
+          );
+        }
+
+        return HomePage(dependencies: snapshot.data!);
+      },
+    );
+  }
+}
+
+class _StartupStatusPage extends StatelessWidget {
+  const _StartupStatusPage({
+    required this.message,
+    required this.icon,
+    this.action,
+  });
+
+  final String message;
+  final IconData icon;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
+
+    return PlatformPageScaffold(
+      title: strings.appTitle,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 36),
+              const SizedBox(height: 16),
+              Text(message, textAlign: TextAlign.center),
+              if (action != null) ...[
+                const SizedBox(height: 16),
+                action!,
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key, required this.dependencies});
+
+  final AppDependencies dependencies;
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     const accent = Color(0xFF315B70);
+    final databaseMessage = dependencies.database.isOpen
+        ? strings.databaseReady
+        : strings.databaseError;
 
     return PlatformPageScaffold(
       title: strings.appTitle,
@@ -65,32 +152,20 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 16),
                 Text(strings.foundationDescription),
                 const SizedBox(height: 24),
-                FutureBuilder<void>(
-                  future: _databaseStartup,
-                  builder: (context, snapshot) {
-                    final isWaiting =
-                        snapshot.connectionState == ConnectionState.waiting;
-                    final isError = snapshot.hasError;
-                    final message = isWaiting
-                        ? strings.databaseChecking
-                        : isError
-                            ? strings.databaseError
-                            : strings.databaseReady;
-
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          isError
-                              ? Icons.error_outline
-                              : Icons.storage_outlined,
-                          color: isError ? const Color(0xFFB3261E) : accent,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(child: Text(message)),
-                      ],
-                    );
-                  },
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      dependencies.database.isOpen
+                          ? Icons.storage_outlined
+                          : Icons.error_outline,
+                      color: dependencies.database.isOpen
+                          ? accent
+                          : const Color(0xFFB3261E),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(databaseMessage)),
+                  ],
                 ),
                 const SizedBox(height: 28),
                 Text(

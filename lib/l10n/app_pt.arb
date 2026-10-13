@@ -5,7 +5,8 @@
   "foundationHeading": "A fundação está pronta",
   "foundationDescription": "O MeshLedger está sendo desenvolvido com prioridade local. O histórico e a origem dos dados permanecerão distintos conforme os recursos de coleta forem adicionados.",
   "databaseChecking": "Abrindo banco de dados local…",
-  "databaseReady": "Banco de dados local aberto com sucesso.",
+  "databaseReady": "Banco de dados local aberto e mantido disponível.",
   "databaseError": "Não foi possível abrir o banco de dados local.",
+  "databaseRetry": "Tentar novamente",
   "developmentNotice": "Versão em desenvolvimento inicial"
 }

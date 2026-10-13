@@ -34,6 +34,17 @@ File importer ─┘        │                                  │
 
 The event is evidence of what a source supplied. An observation is the application's interpretation of some of that evidence. These are related, but not interchangeable.
 
+## Database lifecycle and dependency ownership
+
+- Application startup opens the SQLite database once through `AppDependencies`.
+- The same database connection is passed to the repositories that use it; widgets must not open or close database connections.
+- The startup screen waits for initialization and displays an error with a retry action if initialization fails.
+- The application owns the connection for its active lifetime. Tests and any future explicit shutdown path must close it.
+- Desktop platforms use SQLite FFI; Android and iOS use the native sqflite implementation.
+- Schema changes must use explicit, versioned migrations. Never silently discard source events or observations during an upgrade.
+
+See [ADR 0003](../adr/0003-database-lifecycle-and-dependencies.md).
+
 ## Initial records
 
 ### Source event
@@ -57,4 +68,4 @@ An observation records what the application could interpret about a node at a po
 
 ## Current scope
 
-This baseline creates the app shell, locale resources, initial platform-aware scaffolds, an initial SQLite schema, and a source-aware observation model. It does not yet connect to a radio, subscribe to MQTT, import files, or provide node browsing and search. Native GTK/Qt integration and platform compatibility remain unverified and must be implemented/tested separately.
+This baseline creates the app shell, locale resources, initial platform-aware scaffolds, an initial SQLite schema, a source-aware observation model, and a single startup-owned database connection. It does not yet connect to a radio, subscribe to MQTT, import files, or provide node browsing and search. Native GTK/Qt integration and platform compatibility remain unverified and must be implemented/tested separately.

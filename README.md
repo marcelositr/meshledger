@@ -45,10 +45,12 @@ The first foundation pass is represented in code:
 - initial source-event and node-observation models;
 - local SQLite schema with source provenance and foreign-key constraints;
 - transactional persistence of an event and its parsed observation;
+- a startup-owned SQLite connection injected into the repository layer;
+- localized loading, failure, retry, and ready states for database startup;
 - English (`en`) and Brazilian Portuguese (`pt_BR`) UI resources;
-- starter unit, repository, and platform-scaffold tests;
+- starter unit, repository, dependency-lifecycle, and platform-scaffold tests;
 - a Flutter CI workflow;
-- architecture decisions for the shared foundation and adaptive UI.
+- architecture decisions for the shared foundation, adaptive UI, and database lifecycle.
 
 The next steps are to validate the build and tests, strengthen schema migration and data-integrity behavior, and then add source adapters. Radio capture, node catalog, filters and history, MQTT integration, file import, and platform-specific validation remain future work.
 
@@ -63,7 +65,7 @@ Please open an issue to discuss substantial changes before investing in a large 
 ## Current limitations
 
 - The current app is an early prototype, not a complete node-management application.
-- Supported devices, transports, operating systems, MQTT topics, and import formats must be verified before being declared supported. The CI workflow has been added, but its passing status has not yet been verified.
+- Supported devices, transports, operating systems, MQTT topics, and import formats must be verified before being declared supported. CI analysis and test success do not validate native builds or hardware compatibility.
 - The initial desktop shell is Flutter-based and is not yet a fully native GTK, Qt, WinUI, or AppKit interface.
 - Data interpretation may evolve; original source data should be preserved when practical so it can be reprocessed.
 - Governance text does not itself enforce GitHub permissions, branch protection, CI requirements, or release signing. Those controls must be configured and tested separately.
