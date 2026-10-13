@@ -54,6 +54,19 @@ class _AppStartupPageState extends State<AppStartupPage> {
   }
 
   @override
+  void dispose() {
+    // If initialization finishes after this page is removed, release the
+    // connection too. Failed initialization has no connection to close.
+    unawaited(
+      _dependencies.then<void>(
+        (dependencies) => dependencies.close(),
+        onError: (Object _, StackTrace __) {},
+      ),
+    );
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
 

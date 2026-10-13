@@ -132,4 +132,47 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('closes initialized dependencies when the startup page is removed',
+      (tester) async {
+    dependencies = await tester.runAsync(
+      () => AppDependencies.open(
+        databasePath: p.join(temporaryDirectory.path, 'dispose.db'),
+      ),
+    );
+
+    await tester.pumpWidget(
+      MeshLedgerApp(dependenciesLoader: () async => dependencies!),
+    );
+    await tester.pump();
+    expect(dependencies!.database.isOpen, isTrue);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+
+    expect(dependencies!.database.isOpen, isFalse);
+  });
+
+  testWidgets('closes dependencies that finish opening after the page is removed',
+      (tester) async {
+    final completer = Completer<AppDependencies>();
+
+    await tester.pumpWidget(
+      MeshLedgerApp(dependenciesLoader: () => completer.future),
+    );
+    await tester.pump();
+
+    await tester.pumpWidget(const SizedBox.shrink());
+
+    dependencies = await tester.runAsync(
+      () => AppDependencies.open(
+        databasePath: p.join(temporaryDirectory.path, 'late-dispose.db'),
+      ),
+    );
+    completer.complete(dependencies);
+
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+
+    expect(dependencies!.database.isOpen, isFalse);
+  });
 }

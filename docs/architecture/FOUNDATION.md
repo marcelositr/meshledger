@@ -39,7 +39,8 @@ The event is evidence of what a source supplied. An observation is the applicati
 - Application startup opens the SQLite database once through `AppDependencies`.
 - The same database connection is passed to the repositories that use it; widgets must not open or close database connections.
 - The startup screen waits for initialization and displays an error with a retry action if initialization fails.
-- The application owns the connection for its active lifetime. Tests and any future explicit shutdown path must close it.
+- The startup page releases successful dependencies when it is removed, including connections whose initialization finishes after removal.
+- `AppDependencies.close()` is idempotent, so repeated shutdown requests do not attempt to close the connection repeatedly.
 - Desktop platforms use SQLite FFI; Android and iOS use the native sqflite implementation.
 - Schema changes must use explicit, versioned migrations. Never silently discard source events or observations during an upgrade.
 
