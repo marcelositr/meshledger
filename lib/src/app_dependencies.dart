@@ -12,6 +12,7 @@ class AppDependencies {
 
   final Database database;
   final ObservationRepository observationRepository;
+  Future<void>? _closeFuture;
 
   /// Opens persistent storage once and wires repositories to that connection.
   ///
@@ -25,5 +26,7 @@ class AppDependencies {
     );
   }
 
-  Future<void> close() => database.close();
+  /// Closes the shared connection at most once, even if multiple owners request
+  /// shutdown concurrently or repeat the request.
+  Future<void> close() => _closeFuture ??= database.close();
 }

@@ -47,4 +47,22 @@ void main() {
       isEmpty,
     );
   });
+
+  test('closes the database once and safely accepts repeated close requests',
+      () async {
+    dependencies = await AppDependencies.open(
+      databasePath: p.join(temporaryDirectory.path, 'close.db'),
+    );
+    final database = dependencies!.database;
+
+    expect(database.isOpen, isTrue);
+
+    await dependencies!.close();
+    expect(database.isOpen, isFalse);
+
+    await dependencies!.close();
+    expect(database.isOpen, isFalse);
+
+    dependencies = null;
+  });
 }
